@@ -1,0 +1,75 @@
+我定义了这样一个类，
+class Supplier:
+    def __init__(self, id, avg, risk, comp_rate,ordera_rate):
+        self.id = id
+        self.avg = avg
+        self.risk = risk
+        self.comp_rate = comp_rate
+        self.ordera_rate = ordera_rate
+
+    def get_data(self):
+        return [self.avg, self.risk, self.comp_rate, self.ordera_rate]
+数据从excel表d:\mypython\math_modeling\21_C\.venv\1.xcls获取
+这个表中共有两张表，order和supply它们从第二行开始时一一对应的，每行表示一个企业的数据，
+其中comp_rate=（表supply中sum_s列）/（表order中sum_o列）
+order_rate=(表supply中第二行开始，计数每一行第三列开始大于10的数字的个数）/240
+请帮我补全self.comp_rate = comp_rate和self.ordera_rate = ordera_rate的计算方式
+
+
+for i, (avg, risk, comp_rate_val, order_rate_val) in enumerate(zip(supply_df['avg'], supply_df['risk'], comp_rate, order_rate)):
+我对这种for语句还不是很熟悉，i, (avg, risk, comp_rate_val, order_rate_val)是什么意思
+
+# 假设我们已经计算出了comp_rate和order_rate
+comp_rate = [0.5, 0.6, 0.7]  # 示例数据
+order_rate = [0.2, 0.3, 0.4]  # 示例数据
+
+# 创建Supplier实例
+suppliers = []
+for i, (avg, risk, comp_rate_val, order_rate_val) in enumerate(zip(supply_df['avg'], supply_df['risk'], comp_rate, order_rate)):
+    suppliers.append(Supplier(i, avg, risk, comp_rate_val, order_rate_val))
+CopyInsert
+解释
+数据准备：假设我们已经计算出了comp_rate和order_rate。
+创建实例：使用Supplier类创建实例。zip函数将多个列表打包成一个元组序列，enumerate函数为每个元组提供索引。在循环中，我们使用Supplier类的构造函数创建实例，并将实例添加到suppliers列表中。
+完整示例
+import pandas as pd
+
+class Supplier:
+    def __init__(self, id, avg, risk, comp_rate, ordera_rate):
+        self.id = id
+        self.avg = avg
+        self.risk = risk
+        self.comp_rate = comp_rate
+        self.ordera_rate = ordera_rate
+
+    def get_data(self):
+        return [self.avg, self.risk, self.comp_rate, self.ordera_rate]
+
+# 读取Excel文件中的order和supply表
+order_df = pd.read_excel(r'd:\mypython\math_modeling\21_C\.venv\1.xlsx', sheet_name='order', header=1)
+supply_df = pd.read_excel(r'd:\mypython\math_modeling\21_C\.venv\1.xlsx', sheet_name='supply', header=1)
+
+# 计算comp_rate和order_rate
+comp_rate = supply_df['sum_s'] / order_df['sum_o']
+
+# 计算order_rate
+order_rate = []
+for index, row in supply_df.iterrows():
+    count = sum(cell > 10 for cell in row[2:])
+    order_rate.append(count / 240)
+
+# 创建Supplier实例
+suppliers = []
+for i, (avg, risk, comp_rate_val, order_rate_val) in enumerate(zip(supply_df['avg'], supply_df['risk'], comp_rate, order_rate)):
+    suppliers.append(Supplier(i, avg, risk, comp_rate_val, order_rate_val))
+
+# 打印结果以验证
+for supplier in suppliers:
+    print(f"Supplier ID: {supplier.id}, Avg: {supplier.avg}, Risk: {supplier.risk}, Comp_rate: {supplier.comp_rate}, Order_rate: {supplier.ordera_rate}")
+
+if suppliers.id=402:
+    print(suppliers.risk)
+
+    # 输出结果：
+    # Supplier ID: 0, Avg: 100, Risk: 0.1, Comp_rate: 0.5, Order_rate: 0.2
+    # Supplier ID: 1, Avg: 150, Risk: 0.2, Comp_rate: 0.6, Order_rate: 0.3
