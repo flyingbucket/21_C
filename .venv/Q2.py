@@ -95,7 +95,9 @@ for ind in top24:
 print(max(least))
 top24.sort(key=lambda ind:sum(ind),reverse=True)
 Res=top24[0]
-if sum(Res)==max(least):
-    print('good')
-else:
-    print('bad')
+necessary_suppliers=[]
+supplier_id=suppliers_scores['Supplier ID'].tolist()
+for j,i in enumerate(Res):
+    if i==1:
+        necessary_suppliers.append(supplier_id[j])
+print(f'所需供应商为：{necessary_suppliers}')
