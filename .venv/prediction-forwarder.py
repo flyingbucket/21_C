@@ -1,11 +1,11 @@
 import pandas as pd
 
 # Reading the excel file
-fowarder_df=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\2.xlsx')
-
+forwarder_df=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\2.xlsx')
+forwarder_df['转运商ID']=forwarder_df['转运商ID'].str.replace('T','').astype(int)
 #initializing result
 result=pd.DataFrame(columns=['转运商ID','周数','损耗率'])
-for index,row in fowarder_df.iterrows():
+for index,row in forwarder_df.iterrows():
     forwarder_id=row['转运商ID']
     lose_rate=row[2:242].values
     for i in range(10):
