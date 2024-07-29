@@ -8,8 +8,8 @@ import pandas as pd
 # 读取数据
 supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\supply_expectation.xlsx',header=0)
 fowarder=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\forwarder_expectation.xlsx',header=0)
-print(supplier.columns[0])
-print(fowarder.columns[0])
+# print(supplier.columns[0])
+# print(fowarder.columns[0])
 
 # 成本转换字典
 pur_dict=dict(A=1.2,B=1.1,C=1)
@@ -40,15 +40,18 @@ to_q_price=to_q_quan2*pur_price # to_q_price表示生产单位体积产品的原
 def x_ij(i,j):
     '''计算第i个供应商第j周的供应量'''
     return supplier.iloc[i,j+1]
+# good
 
 def y_ij(i,j):
     '''计算第i个转运商第j周的损耗率'''
-    return fowarder.iloc[i,j]
+    return fowarder.iloc[i-1,j]
+# good
 
 def lose_rate_arr(x,t):
     '''计算第t周x安排方式下，各转运商的损耗率数组'''
-    lose_rate_ls=[y_ij(i,t) for i in x.tolist()]
+    lose_rate_ls=[y_ij(i,t) for i in x]
     return np.array(lose_rate_ls)
+# good
 
 def tell_type(type):
     type_supply=[]
@@ -61,7 +64,7 @@ def tell_type(type):
 
 def tell_type_trans(x,i):
     ls=[]
-    for tr in x.tolist():
+    for tr in x:
         if tr==i:
             ls.append(1)
         else:
@@ -87,9 +90,9 @@ def new_store(x,y,t):
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur) # 乘上y即可的本周各供应商供货量
     new=pur_raw*(1-lose_rate_arr(x,t))*y
-    restA=sum(new*tell_type('A')-2.82*10**4/3)
-    restB=sum(new*tell_type('B')-2.82*10**4/3)
-    restC=sum(new*tell_type('C')-2.82*10**4/3)
+    restA=np.sum(new*tell_type('A')-2.82*10**4/3)
+    restB=np.sum(new*tell_type('B')-2.82*10**4/3)
+    restC=np.sum(new*tell_type('C')-2.82*10**4/3)
     sum=restA+restB+restC
     return sum
 
@@ -118,11 +121,13 @@ def trans_con(x,y,t):
         ls.append(quan)
     return max(ls)-6000
 
-def store_con(x,y,t):
+def store_con(x,y,t,store_history):
     '''库存约束'''
-    return store(x,y,t)-2*2.82*10**4
+    if t == 1:
+        res = 2 * 2.82 * 10**4 + new_store(x, y, 1)
+    else:
+        res = store_history[-1] + new_store(x, y, t)
+    return res-2*2.82*10**4
 
-# ---求解---
+# ---测试---
 
-    
-    
