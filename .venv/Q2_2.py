@@ -97,18 +97,15 @@ def new_store(x,y,t):
     return sum
 
 def store(x, y, t, store_history):
-    '''计算第t周库存量'''
-    if t == 1:
-        res = 2 * 2.82 * 10**4 + new_store(x, y, 1)
-    else:
-        res = store_history[-1] + new_store(x, y, t)
-    return res
+    '''计算第t周周末时的库存量'''
+    return  store_history[-1] + new_store(x, y, t)
+    
 
 
 # ---定义目标函数---
-def cost(x,y,t):
+def cost(x,y,t,store_history):
     '''计算目标函数'''
-    return pur_cost(y,t)+trans_lose(x,y,t)+store(x,y,t)
+    return pur_cost(y,t)+trans_lose(x,y,t)+store(x,y,t,store_history)
 
 # ---约束条件---
 def trans_con(x,y,t):
@@ -117,17 +114,19 @@ def trans_con(x,y,t):
     pur_raw=np.array(pur)
     ls=[]
     for tr in range(1,9):
-        quan=sum(tell_type_trans(x,tr)*y*pur_raw)
+        quan=np.sum(tell_type_trans(x,tr)*y*pur_raw)
         ls.append(quan)
     return max(ls)-6000
 
 def store_con(x,y,t,store_history):
     '''库存约束'''
-    if t == 1:
-        res = 2 * 2.82 * 10**4 + new_store(x, y, 1)
-    else:
-        res = store_history[-1] + new_store(x, y, t)
-    return res-2*2.82*10**4
+    return store_history[-1]+new_store(x,y,t)-2*2.82*10**4
 
 # ---测试---
-
+x=np.random.randint(1,9,50)
+y=np.random.randint(0,2,50)
+t=1
+pur=[x_ij(i,t) for i in range(50)]
+pur_raw=np.array(pur)
+A=tell_type_trans(x,2)*y*pur_raw
+print(len(A))
