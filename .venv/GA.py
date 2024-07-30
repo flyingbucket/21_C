@@ -11,7 +11,7 @@ def evaluate(t,store_history,individual):
     y = individual[50:]
     if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
-    return cost(x, y, t),
+    return cost(x, y, t, store_history),
 
 # 创建适应度最小化类型
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))

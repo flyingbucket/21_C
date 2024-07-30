@@ -49,7 +49,7 @@ def y_ij(i,j):
 
 def lose_rate_arr(x,t):
     '''计算第t周x安排方式下，各转运商的损耗率数组'''
-    lose_rate_ls=[y_ij(i,t) for i in x]
+    lose_rate_ls=[y_ij(i,t)/100 for i in x]
     return np.array(lose_rate_ls)
 # good
 
@@ -83,16 +83,16 @@ def trans_lose(x,y,t):
     '''计算运输损耗'''
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur)
-    return np.sum(y*pur_raw*to_q_quan1*lose_rate_arr)
+    return np.sum(y*pur_raw*to_q_quan1*lose_rate_arr(x,t))
 
 def new_store(x,y,t):
     '''计算第t周新增库存量'''
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur) # 乘上y即可的本周各供应商供货量
     new=pur_raw*(1-lose_rate_arr(x,t))*y
-    restA=np.sum(new*tell_type('A')-2.82*10**4/3)
-    restB=np.sum(new*tell_type('B')-2.82*10**4/3)
-    restC=np.sum(new*tell_type('C')-2.82*10**4/3)
+    restA=np.sum(new*tell_type('A'))*to_q_dict['A']-2.82*10**4/3
+    restB=np.sum(new*tell_type('B'))*to_q_dict['B']-2.82*10**4/3
+    restC=np.sum(new*tell_type('C'))*to_q_dict['C']-2.82*10**4/3
     sum=restA+restB+restC
     return sum
 
@@ -123,10 +123,24 @@ def store_con(x,y,t,store_history):
     return store_history[-1]+new_store(x,y,t)-2*2.82*10**4
 
 # ---测试---
-x=np.random.randint(1,9,50)
-y=np.random.randint(0,2,50)
-t=1
-pur=[x_ij(i,t) for i in range(50)]
-pur_raw=np.array(pur)
-A=tell_type_trans(x,2)*y*pur_raw
-print(len(A))
+# x=np.random.randint(1,9,50)
+# y=np.random.randint(0,2,50)
+# t=1
+# pur=[x_ij(i,t) for i in range(50)]
+# pur_raw=np.array(pur)
+# new=pur_raw*(1-lose_rate_arr(x,t))*y
+# A=tell_type_trans(x,2)*y*pur_raw
+# print(len(A))
+# store_history=[2*2.82*10**4]
+# B=store_con(x,y,t,store_history)
+# print(B)
+# C=new_store(x,y,t)
+# print(C)
+# print(store_history[-1])
+# restA=np.sum(new*tell_type('A'))*to_q_dict['A']
+# restB=np.sum(new*tell_type('B'))*to_q_dict['B']
+# restC=np.sum(new*tell_type('C'))*to_q_dict['C']
+# print(restA,restB,restC)
+# D=lose_rate_arr(x,t)
+# print(D)
+
