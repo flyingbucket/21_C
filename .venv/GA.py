@@ -4,7 +4,7 @@ from deap import base, creator, tools, algorithms
 from Q2_2 import store, trans_con, store_con, cost
 from tqdm import tqdm,trange
 
-# 假设已经定义了目标函数 cost 和约束条件 trans_con, store_con
+# Q2_2.py 已经定义了目标函数 cost 和约束条件 trans_con, store_con
 def check(individual):
     x = individual[:50]
     y = individual[50:]
@@ -38,9 +38,6 @@ toolbox.register("attr_bool", np.random.randint, 0, 2,size=50)
 toolbox.register("con_xy",lambda: np.hstack((toolbox.attr_int(), toolbox.attr_bool())).tolist())
 toolbox.register("individual", lambda:creator.Individual(toolbox.con_xy()))
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-# so far,so good
-# breakpoint()
-
 
 # 注册遗传操作
 toolbox.register("mate", tools.cxTwoPoint)
@@ -57,7 +54,6 @@ def GA(t, store_history):
     
     for ind, fit in tqdm(zip(population, fitnesses),total=len(population), desc="Evaluating Population"):
         ind.fitness.values = fit
-    # breakpoint()
 
     # 进化过程
     population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=5, verbose=True)
@@ -69,11 +65,6 @@ def GA(t, store_history):
     best_cost = best_individual.fitness.values[0]
 
     # 更新库存记录
-    # if t == 1:
-    #     current_store = store(best_x, best_y, t, [])
-    # else:
-    #     current_store = store(best_x, best_y, t, store_history)
-    # store_history.append(current_store)
     current_store=store(best_x, best_y, t, store_history)
     store_history.append(current_store)
     return best_x, best_y, best_cost
@@ -83,7 +74,6 @@ if __name__ == '__main__':
     res_x = []
     res_y = []
     res_cost = []
-    # breakpoint()
     for t in trange(1, 25):
         best_x, best_y, best_cost = GA(t, store_history)
         res_x.append(best_x)
@@ -93,10 +83,11 @@ if __name__ == '__main__':
     res_x = pd.DataFrame(res_x)
     res_y = pd.DataFrame(res_y)
     res_cost = pd.DataFrame(res_cost)
-
+    store_history = pd.DataFrame(store_history)
+    
     # 保存结果
     res_x.to_excel('GA_x.xlsx', index=False)
     res_y.to_excel('GA_y.xlsx', index=False)
     res_cost.to_excel('GA_cost.xlsx', index=False)
-    
+    store_history.to_excel('GA_store_history.xlsx', index=False)
     print("Done!")
