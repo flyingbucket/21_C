@@ -5,13 +5,26 @@ from Q2_2 import store, trans_con, store_con, cost
 from tqdm import tqdm,trange
 
 # 假设已经定义了目标函数 cost 和约束条件 trans_con, store_con
+def check(individual):
+    x = individual[:50]
+    y = individual[50:]
+    for i in x:
+        if i==0:
+            return False
+    for i in y:
+        if i>1:
+            return False
+    return True
 
 def evaluate(t,store_history,individual):
     x = individual[:50]
     y = individual[50:]
     if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
-    return cost(x, y, t, store_history),
+    elif not check(individual):
+        return 10**10,  # 惩罚不满足约束条件的解
+    else:
+        return cost(x, y, t, store_history),
 
 # 创建适应度最小化类型
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
