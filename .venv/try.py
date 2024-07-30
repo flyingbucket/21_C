@@ -1,4 +1,6 @@
-import pandas as pd
-suppliers_scores = pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\scores.xlsx', header=0)
-supplier_id=suppliers_scores['Supplier ID']
-print(supplier_id)
+import numpy as np
+a=np.array([1,2,3])
+b=np.zeros(3)
+c=np.hstack((a,b))
+print(c)
+print(c[0])
