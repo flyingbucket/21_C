@@ -52,7 +52,7 @@ def GA(t, store_history):
     # 评估种群
     fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
     
-    for ind, fit in tqdm(zip(population, fitnesses),total=len(population), desc="Evaluating Population"):
+    for ind, fit in zip(population, fitnesses):
         ind.fitness.values = fit
 
     # 进化过程
