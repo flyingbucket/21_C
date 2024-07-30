@@ -87,8 +87,10 @@ if __name__ == '__main__':
     res_x = pd.DataFrame(res_x)
     res_y = pd.DataFrame(res_y)
     res_cost = pd.DataFrame(res_cost)
-
+    store_history = pd.DataFrame(store_history)
+    
     # 保存结果
-    res_x.to_excel('GA_x1.xlsx', index=False)
-    res_y.to_excel('GA_y1.xlsx', index=False)
-    res_cost.to_excel('GA_cost1.xlsx', index=False)
+    res_x.to_excel('GA1_x.xlsx', index=False)
+    res_y.to_excel('GA1_y.xlsx', index=False)
+    res_cost.to_excel('GA1_cost.xlsx', index=False)
+    store_history.to_excel('GA1_store_history.xlsx', index=False)
