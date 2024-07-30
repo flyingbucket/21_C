@@ -38,7 +38,7 @@ def mutate(individual, indpb=0.2):
                 individual[i] = np.random.randint(0, 2)
     return individual
 
-def GA(t, store_history, pop_size=30, ind_size=50, cxpb=0.5, mutpb=0.2, ngen=240):
+def GA(t, store_history, pop_size=300, ind_size=50, cxpb=0.5, mutpb=0.2, ngen=120):
     population = init_population(pop_size, ind_size)
     fitnesses = [evaluate(ind, store_history, t) for ind in population]
 
@@ -89,6 +89,6 @@ if __name__ == '__main__':
     res_cost = pd.DataFrame(res_cost)
 
     # 保存结果
-    res_x.to_excel('GA_x.xlsx', index=False)
-    res_y.to_excel('GA_y.xlsx', index=False)
-    res_cost.to_excel('GA_cost.xlsx', index=False)
+    res_x.to_excel('GA_x1.xlsx', index=False)
+    res_y.to_excel('GA_y1.xlsx', index=False)
+    res_cost.to_excel('GA_cost1.xlsx', index=False)
