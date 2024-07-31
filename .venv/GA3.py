@@ -3,6 +3,7 @@ import pandas as pd
 from deap import base, creator, tools, algorithms
 from Q3 import store, trans_con, store_con, obj
 from tqdm import tqdm,trange
+import random
 
 # Q3.py 已经定义了目标函数 obj 和约束条件 trans_con, store_con
 def check(individual):
@@ -26,6 +27,17 @@ def evaluate(t,store_history,individual):
     else:
         return obj(x, y, t, store_history),
 
+# 自定义变异函数
+def custom_mutate(individual, indpb):
+    for i in range(len(individual)):
+        if random.random() < indpb:
+            if i < 50:
+                individual[i] = random.randint(1, 8)  # 前50个元素的变异范围是1到8
+            else:
+                individual[i] = random.randint(0, 1)  # 后50个元素的变异范围是0、1
+    return individual,
+
+
 # 创建适应度最小化类型
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
@@ -41,7 +53,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # 注册遗传操作
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutUniformInt, low=1, up=8, indpb=0.2)
+toolbox.register("mutate", custom_mutate, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
 def GA(t, store_history):
@@ -86,8 +98,9 @@ if __name__ == '__main__':
     store_history = pd.DataFrame(store_history)
     
     # 保存结果
-    res_x.to_excel('GA_x3.xlsx', index=False)
-    res_y.to_excel('GA_y3.xlsx', index=False)
-    res_obj.to_excel('GA_fitness3.xlsx', index=False)
-    store_history.to_excel('GA_store_history3.xlsx', index=False)
+    with pd.ExcelWriter(r'D:\mypython\math_modeling\21_C\result\Q3_result.xlsx') as writer:
+        res_x.to_excel(writer, sheet_name='x', index=False)
+        res_y.to_excel(writer, sheet_name='y', index=False)
+        res_obj.to_excel(writer, sheet_name='fitness', index=False)
+        store_history.to_excel(writer, sheet_name='store_history', index=False)
     print("Done!")

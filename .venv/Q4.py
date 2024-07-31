@@ -98,14 +98,14 @@ def store(x, y, t, Q,store_history):
     '''计算第t周周末时的库存量'''
     return  store_history[-1] + new_store(x, y, t,Q)
     
-def cost(x,y,t,store_history):
+def cost(x,y,t,Q,store_history):
     '''计算目标函数'''
     return pur_cost(y,t)+trans_lose(x,y,t)+store(x,y,t,Q,store_history)
 
 # ---定义目标函数---
 def obj(x,y,t,Q,store_history):
     '''目标函数'''
-    return cost(x,y,t,store_history)-2*Q*10**4
+    return cost(x,y,t,Q,store_history)-2*Q*10**4
 
 # ---约束条件---
 def trans_con(x,y,t):
@@ -118,9 +118,9 @@ def trans_con(x,y,t):
         ls.append(quan)
     return max(ls)-6000
 
-def store_con(x,y,t,store_history):
+def store_con(x,y,t,Q,store_history):
     '''库存约束'''
-    return store_history[-1]+new_store(x,y,t)-2*2.82*10**4
+    return store_history[-1]+new_store(x,y,t,Q)-2*Q*10**4
 
 # ---测试---
 x=np.random.randint(1,9,50)
