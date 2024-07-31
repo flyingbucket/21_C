@@ -11,7 +11,7 @@ import pandas as pd
 
 # print(df)
 
-
+''''''
 def check(individual):
     x = individual[:50]
     y = individual[50:]
@@ -22,7 +22,7 @@ def check(individual):
         if i>1:
             return False
     return True
-
+''''''
 x=np.random.randint(0,9,size=50)
 y=np.random.randint(0,2,size=50)
 ind=np.hstack((x,y))
