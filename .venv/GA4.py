@@ -18,6 +18,13 @@ def check(individual):
             return False
     return True
 
+def check_p(population,p_size):
+    che,a=0,p_size*0.95
+    for ind in population:
+        che+=ind.fitness.values[0]
+    if che<=a*10**10:
+        return True
+    
 def evaluate(t,store_history,individual):
     x = individual[:50]
     y = individual[50:100]
@@ -64,10 +71,11 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 # 注册遗传操作
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", custom_mutate,indpb=0.2)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("select", tools.selTournament, tournsize=15)
 
 def GA(t, store_history):
-    population = toolbox.population(n=10)
+    p_size=10
+    population = toolbox.population(n=p_size)
 
     # 注册评估函数
     toolbox.register("evaluate", evaluate,t,store_history)
@@ -77,6 +85,13 @@ def GA(t, store_history):
     for ind, fit in zip(population, fitnesses):
         ind.fitness.values = fit
 
+    #种群过差则重新生成种群
+    while not check_p(population,p_size):
+        population = toolbox.population(n=p_size)
+        fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+        for ind, fit in zip(population, fitnesses):
+            ind.fitness.values = fit
+    
     # 进化过程
     population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=5, verbose=True)
 
