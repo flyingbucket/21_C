@@ -81,7 +81,7 @@ def GA(t, store_history):
         fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
         for ind, fit in zip(population, fitnesses):
             ind.fitness.values = fit
-    
+    toolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", np.mean)
     stats.register("min", np.min)

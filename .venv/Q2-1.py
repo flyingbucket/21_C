@@ -10,7 +10,7 @@ supplier_id_header = headers[1]
 supplier_score_header = headers[2]
 supplier_ids = suppliers_scores[supplier_id_header].values
 supplier_scores = suppliers_scores[supplier_score_header].values
-supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\supply_expectation.xlsx', header=0)
+supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\data\supply_expectation.xlsx', header=0)
 resource_type=supplier['材料分类'].tolist()
 rate_dict=dict(A=1/0.6,B=1/0.66,C=1/0.72)
 

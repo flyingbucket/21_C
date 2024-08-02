@@ -6,6 +6,9 @@ from Q2_2 import store, trans_con, store_con, cost
 from tqdm import tqdm,trange
 
 # Q2_2.py 已经定义了目标函数 cost 和约束条件 trans_con, store_con
+P=pd.read_excel(r'D:\mypython\math_modeling\21_C\data\guess.xlsx',header=None)
+P=P.values.tolist()
+
 def check(individual):
     x = individual[:50]
     y = individual[50:]
@@ -25,8 +28,8 @@ def check_p(population,p_size):
         return True
 
 def evaluate(t,store_history,individual):
-    x = individual[:50]
-    y = individual[50:]
+    x = individual[:8]
+    y = individual[8:]
     if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
     elif not check(individual):
@@ -52,28 +55,29 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 toolbox = base.Toolbox()
 
 # 注册个体和种群
-toolbox.register("attr_int", np.random.randint, 1, 9,size=50)
-toolbox.register("attr_bool", np.random.randint, 0, 2,size=50)
-toolbox.register("con_xy",lambda: np.hstack((toolbox.attr_int(), toolbox.attr_bool())).tolist())
-toolbox.register("individual", lambda:creator.Individual(toolbox.con_xy()))
+population = P
+# toolbox.register("attr_int", np.random.randint, 1, 9,size=50)
+# toolbox.register("attr_bool", np.random.randint, 0, 2,size=58)
+# toolbox.register("con_xy",lambda: np.hstack((toolbox.attr_int(), toolbox.attr_bool())).tolist())
+toolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # 注册遗传操作
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", custom_mutate, indpb=0.1)
+toolbox.register("mutate", tools.mutFlipBit, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=15)
 
 def GA(t, store_history):
-    p_size=550
+    p_size=240
+    # 种群初始化
     population = toolbox.population(n=p_size)
-
     # 注册评估函数
     toolbox.register("evaluate", evaluate,t,store_history)
     # 评估种群
     fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
     
     for ind, fit in zip(population, fitnesses):
-        ind.fitness.values = fit
+        ind.fitness.values = fittoolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
 
     #种群过差则重新生成种群
     m=0
@@ -95,8 +99,8 @@ def GA(t, store_history):
 
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]
-    best_x = best_individual[:50]
-    best_y = best_individual[50:]
+    best_x = best_individual[:8]
+    best_y = best_individual[8:]
     best_cost = best_individual.fitness.values[0]
 
     # 更新库存记录
@@ -109,16 +113,12 @@ if __name__ == '__main__':
     res_x = []
     res_y = []
     res_cost = []
-    t=1
-    while t<=24:
+    for t in trange(1, 25):
         best_x, best_y, best_cost = GA(t, store_history)
         res_x.append(best_x)
         res_y.append(best_y)
         res_cost.append(best_cost)
-        if res_cost[-1]<10**10:
-            t+=1
-        else:
-            pass
+
     res_x = pd.DataFrame(res_x)
     res_y = pd.DataFrame(res_y)
     res_cost = pd.DataFrame(res_cost)

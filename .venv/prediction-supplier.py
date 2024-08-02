@@ -2,7 +2,7 @@ import pandas as pd
 
 # 读取数据
 scores_df = pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\scores.xlsx')
-suppliers_df = pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\1.xlsx')
+suppliers_df = pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\1.xlsx',sheet_name='supply')
 
 # 提取高分的研究对象的供货商ID
 filtered_supplier_ids = scores_df['Supplier ID'].unique()

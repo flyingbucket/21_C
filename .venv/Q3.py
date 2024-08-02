@@ -6,8 +6,9 @@ import pandas as pd
 决策变量y为50维01数组，表示供应商选择
 """
 # 读取数据
-supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\supply_expectation.xlsx',header=0)
-fowarder=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\forwarder_expectation.xlsx',header=0)
+supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\data\supply_expectation.xlsx',header=0)
+fowarder=pd.read_excel(r'D:\mypython\math_modeling\21_C\data\forwarder_expectation.xlsx',header=0)
+fowarder.columns=[i for i in range(25)]
 # print(supplier.columns[0])
 # print(fowarder.columns[0])
 
@@ -47,10 +48,11 @@ def y_ij(i,j):
     return fowarder.iloc[i-1,j]
 # good
 
-def lose_rate_arr(x,t):
-    '''计算第t周x安排方式下，各转运商的损耗率数组'''
-    lose_rate_ls=[y_ij(i,t)/100 for i in x]
-    return np.array(lose_rate_ls)
+def lose_rate(t):
+    '''计算第t周x安排方式下，各转运商的损耗率列表'''
+    lose_rate_ls=fowarder[t].tolist()
+    lose_rate=[ra/100 for ra in lose_rate_ls]
+    return lose_rate
 # good
 
 def tell_type(type):
@@ -81,57 +83,56 @@ def pur_cost(y,t):
     
 def trans_lose(x,y,t):
     '''计算运输损耗'''
-    pur=[x_ij(i,t) for i in range(50)]
-    pur_raw=np.array(pur)
-    return np.sum(y*pur_raw*to_q_quan1*lose_rate_arr(x,t))
+    pur_raw=[x_ij(i,t) for i in range(50)]
+    pur_raw=np.array(pur_raw)
+    lose=lose_rate(t)
+    res=0
+    for i in lose:
+        res+=y*pur_raw*to_q_quan1/np.sum(x)*i
+    return res
 
 def new_store(x,y,t):
     '''计算第t周新增库存量'''
-    pur=[x_ij(i,t) for i in range(50)]
-    pur_raw=np.array(pur) # 乘上y即可的本周各供应商供货量
-    new=pur_raw*(1-lose_rate_arr(x,t))*y
-    restA=np.sum(new*tell_type('A'))*to_q_dict['A']-2.82*10**4/3
-    restB=np.sum(new*tell_type('B'))*to_q_dict['B']-2.82*10**4/3
-    restC=np.sum(new*tell_type('C'))*to_q_dict['C']-2.82*10**4/3
-    sum=restA+restB+restC
-    return sum
+    pur_raw=[x_ij(i,t) for i in range(50)]
+    pur_raw=np.array(pur_raw) # 乘上y即可的本周各供应商供货量
+    lose=lose_rate(t)
+    res=0
+    for i in lose:
+        res+=y*pur_raw*to_q_quan1/np.sum(x)*(1-i)
+    return res-2.82*10**4
 
 def store(x, y, t, store_history):
     '''计算第t周周末时的库存量'''
     return  store_history[-1] + new_store(x, y, t)
     
-def A_quan(x,y,t):
+    
+def A_quan(y,t):
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur) # 乘上y即可的本周各供应商供货量
-    new=pur_raw*(1-lose_rate_arr(x,t))*y
-    res=np.sum(new*tell_type('A'))
+    res=np.sum(pur_raw*y*tell_type('A'))
     return res
 
-def C_quan(x,y,t):
+def C_quan(y,t):
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur) # 乘上y即可的本周各供应商供货量
-    new=pur_raw*(1-lose_rate_arr(x,t))*y
-    res=np.sum(new*tell_type('C'))
+    res=np.sum(pur_raw*y*tell_type('C'))
     return res
 
 def cost(x,y,t,store_history):
-    '''计算目标函数'''
+    '''计算成本'''
     return pur_cost(y,t)+trans_lose(x,y,t)+store(x,y,t,store_history)
 
 # ---定义总目标函数---
 def obj(x,y,t,store_history):
-    res=cost(x,y,t,store_history)+4*C_quan(x,y,t)-4*A_quan(x,y,t)
+    res=cost(x,y,t,store_history)+4*C_quan(y,t)-4*A_quan(y,t)
     return res
 # ---约束条件---
 def trans_con(x,y,t):
     '''转运约束'''
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur)
-    ls=[]
-    for tr in range(1,9):
-        quan=np.sum(tell_type_trans(x,tr)*y*pur_raw)
-        ls.append(quan)
-    return max(ls)-6000
+    sum=np.sum(y*pur_raw)
+    return 6000*np.sum(x)-sum
 
 def store_con(x,y,t,store_history):
     '''库存约束'''

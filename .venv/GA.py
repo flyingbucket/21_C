@@ -76,17 +76,17 @@ def GA(t, store_history):
         ind.fitness.values = fit
 
     #种群过差则重新生成种群
-    while not check_p(population,p_size):
-        population = toolbox.population(n=p_size)
-        fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
-        for ind, fit in zip(population, fitnesses):
-            ind.fitness.values = fit
+    # while not check_p(population,p_size):
+    #     population = toolbox.population(n=p_size)
+    #     fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+    #     for ind, fit in zip(population, fitnesses):
+    #         ind.fitness.values = fit
     # 进化过程
     population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=5, verbose=True)
 
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]
-    best_x = best_individual[:50]
+    best_x = best_individual[:8]
     best_y = best_individual[50:]
     best_cost = best_individual.fitness.values[0]
 
