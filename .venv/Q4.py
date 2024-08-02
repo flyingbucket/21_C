@@ -98,7 +98,7 @@ def new_store(x,y,t,Q):
     lose=lose_rate(t)
     res=0
     for i in lose:
-        res+=y*pur_raw*to_q_quan1/np.sum(x)*(1-i)
+        res+=np.sum(y*pur_raw*to_q_quan1)/np.sum(x)*(1-i)
     return res-Q*10**4
 
 def store(x, y, t, Q,store_history):

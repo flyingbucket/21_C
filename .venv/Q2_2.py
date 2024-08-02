@@ -96,7 +96,7 @@ def new_store(x,y,t):
     pur_raw=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur_raw) # 乘上y即可的本周各供应商供货量
     res=0
-    lose=lose_rate(t)toolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
+    lose=lose_rate(t)
     for i in lose:
         res+=np.sum(y*pur_raw*to_q_quan1)/np.sum(x)*(1-i)
     return res-2.82*10**4
@@ -122,7 +122,7 @@ def trans_con(x,y,t):
 
 def store_con(x,y,t,store_history):
     '''库存约束'''
-    return store_history[-1]+new_store(x,y,t)-2*2.82*10**4
+    return store_history[-1]+new_store(x,y,t)-2.82*10**4 ##！！！
 
 # ---测试---
 x=np.random.randint(1,9,50)

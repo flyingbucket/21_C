@@ -64,7 +64,7 @@ toolbox.register("mutate", custom_mutate, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=15)
 
 def GA(t, store_history):
-    p_size=10
+    p_size=100
     population = toolbox.population(n=p_size)
 
     # 注册评估函数

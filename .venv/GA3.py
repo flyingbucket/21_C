@@ -75,13 +75,13 @@ def GA(t, store_history):
     for ind, fit in zip(population, fitnesses):
         ind.fitness.values = fit
     
-    #种群过差则重新生成种群
-    while not check_p(population,p_size):
-        population = toolbox.population(n=p_size)
-        fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
-        for ind, fit in zip(population, fitnesses):
-            ind.fitness.values = fit
-    toolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
+    # #种群过差则重新生成种群
+    # while not check_p(population,p_size):
+    #     population = toolbox.population(n=p_size)
+    #     fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+    #     for ind, fit in zip(population, fitnesses):
+    #         ind.fitness.values = fit
+    # toolbox.register("individual", tools.initIterate, creator.Individual, lambda: random.choice(P))
     stats = tools.Statistics(lambda ind: ind.fitness.values)
     stats.register("avg", np.mean)
     stats.register("min", np.min)
