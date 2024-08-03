@@ -37,10 +37,24 @@ print(check(ind))
 #     i-=1
 #     print(a)
 
-a=np.array([1,2,3])
-b=np.zeros(3)
-c=np.vstack((a,b))
-d=c.T
-# print(d)
-df=pd.DataFrame(d)
-print(df)
+# a=np.array([1,2,3])
+# b=np.zeros(3)
+# c=np.vstack((a,b))
+# d=c.T
+# # print(d)
+# df=pd.DataFrame(d)
+# print(df)
+
+import numpy as np
+import pandas as pd
+
+supply=pd.read_excel(r'D:\mypython\math_modeling\21_C\data\order_choice.xlsx',header=0)
+supplier=supply['供应商ID'].values.tolist()
+sup_arr=np.array(supplier)
+z=[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 
+1, 1, 0]
+z_arr=np.array(z)
+res=z_arr*sup_arr
+res=res.tolist()
+print(sum(z))
+print(res)

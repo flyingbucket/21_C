@@ -78,7 +78,7 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 
 # 运行遗传算法
 population = toolbox.population(n=500)
-NGEN = 1200
+NGEN = 120
 for gen in tqdm.trange(NGEN):
     offspring = algorithms.varAnd(population, toolbox, cxpb=0.5, mutpb=0.1)
     fits = toolbox.map(toolbox.evaluate, offspring)
@@ -95,6 +95,7 @@ for ind in top24:
 print(max(least))
 top24.sort(key=lambda ind:sum(ind),reverse=True)
 Res=top24[0]
+print(Res)
 necessary_suppliers=[]
 supplier_id=suppliers_scores['Supplier ID'].tolist()
 for j,i in enumerate(Res):

@@ -4,11 +4,14 @@ from deap import base, creator, tools, algorithms
 from Q3 import store, trans_con, store_con, obj
 from tqdm import tqdm,trange
 import random
-
+z=[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 
+1, 1, 0]
 # Q3.py 已经定义了目标函数 obj 和约束条件 trans_con, store_con
 def check(individual):
     x = individual[:50]
-    y = individual[50:]
+    temp = individual[50:]
+    y=np.array(temp)*np.array(z)
+    y=y.tolist()
     for i in x:
         if i==0:
             return False
@@ -25,7 +28,9 @@ def check_p(population,p_size):
         return True
 def evaluate(t,store_history,individual):
     x = individual[:50]
-    y = individual[50:]
+    temp = individual[50:]
+    y=np.array(temp)*np.array(z)
+    y=y.tolist()
     if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
     elif not check(individual):
@@ -94,7 +99,9 @@ def GA(t, store_history):
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]
     best_x = best_individual[:50]
-    best_y = best_individual[50:]
+    best_temp = best_individual[50:]
+    best_y=np.array(best_temp)*np.array(z)
+    best_y=best_y.tolist()
     best_cost = best_individual.fitness.values[0]
 
     # 更新库存记录

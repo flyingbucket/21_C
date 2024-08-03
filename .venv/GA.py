@@ -7,7 +7,10 @@ from tqdm import tqdm,trange
 
 # Q2_2.py 已经定义了目标函数 cost 和约束条件 trans_con, store_con
 def check(individual):
-    x = individual[:50]
+    x=individual[:50]
+    temp = individual[:50]
+    x=np.array(temp)*np.array(z)
+    x=x.tolist()
     y = individual[50:]
     for i in x:
         if i==0:
@@ -26,6 +29,9 @@ def check_p(population,p_size):
 
 def evaluate(t,store_history,individual):
     x = individual[:50]
+    # temp = individual[50:]
+    # y=np.array(temp)*np.array(z)
+    # y=y.tolist()
     y = individual[50:]
     if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
@@ -62,7 +68,8 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", custom_mutate, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=15)
-
+z=[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 
+1, 1, 0]
 def GA(t, store_history):
     p_size=100
     population = toolbox.population(n=p_size)
@@ -82,12 +89,14 @@ def GA(t, store_history):
     #     for ind, fit in zip(population, fitnesses):
     #         ind.fitness.values = fit
     # 进化过程
-    population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=5, verbose=True)
+    population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.05, ngen=25, verbose=True)
 
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]
-    best_x = best_individual[:8]
-    best_y = best_individual[50:]
+    best_x = best_individual[:50]
+    best_temp = best_individual[50:]
+    best_y = np.array(best_temp)*np.array(z)
+    best_y = best_y.tolist()
     best_cost = best_individual.fitness.values[0]
 
     # 更新库存记录

@@ -5,6 +5,9 @@ from functools import partial
 from tqdm import tqdm, trange
 from Q2_2 import store, trans_con, store_con,cost
 
+z=[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 
+1, 1, 0]
+print(len(z))
 def evaluate(individual, store_history, t):
     if len(individual) != 100:
         raise ValueError(f"individual 的长度应为 100,{len(individual)}")

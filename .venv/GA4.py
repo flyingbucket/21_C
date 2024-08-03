@@ -27,7 +27,9 @@ def check_p(population,p_size):
     
 def evaluate(t,store_history,individual):
     x = individual[:50]
-    y = individual[50:100]
+    temp = individual[50:100]
+    y=np.array(temp)*np.array(z)
+    y=y.tolist()
     q=individual[-1]
     if trans_con(x, y, t) < 0 or store_con(x, y, t, q,store_history) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
@@ -72,7 +74,8 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", custom_mutate,indpb=0.2)
 toolbox.register("select", tools.selTournament, tournsize=15)
-
+z=[0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 
+1, 1, 0]
 def GA(t, store_history):
     p_size=10
     population = toolbox.population(n=p_size)
@@ -98,7 +101,9 @@ def GA(t, store_history):
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]
     best_x = best_individual[:50]
-    best_y = best_individual[50:100]
+    best_temp = best_individual[50:100]
+    best_y=np.array(best_temp)*np.array(z)
+    best_y=best_y.tolist()
     best_Q = best_individual[100]
     best_cost = best_individual.fitness.values[0]
 
