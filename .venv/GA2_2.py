@@ -2,8 +2,17 @@ import numpy as np
 import pandas as pd
 from deap import base, creator, tools, algorithms
 import random
+import json
 from Q2_2 import store, trans_con, store_con, cost
 from tqdm import tqdm,trange
+
+# 从search_space.txt 读取数据
+with open(r'D:\mypython\math_modeling\21_C\data\search_space.txt', 'r') as file:
+    search_space = json.load(file)
+
+print(type(search_space))  # 确认读取的内容是列表
+print(len(search_space))  # 确认列表长度为2400
+
 
 # Q2_2.py 已经定义了目标函数 cost 和约束条件 trans_con, store_con
 def check(individual):
@@ -18,16 +27,20 @@ def check(individual):
     return True
 
 def check_p(population,p_size):
-    che,a=0,p_size*0.95
+    g=0
     for ind in population:
-        che+=ind.fitness.values[0]
-    if che<=a*10**10:
-        return True
+        if ind.fitness.values[0]<10**10:
+            g+=1
+        if g>=p_size/3:
+            return True
+    return False
 
-def evaluate(t,store_history,individual):
+def evaluate(t,store_history,tc,sc,individual):
+    if not isinstance(individual, (list, tuple)):
+        raise TypeError("individual must be a list or tuple, got {}".format(type(individual)))
     x = individual[:50]
     y = individual[50:]
-    if trans_con(x, y, t) < 0 or store_con(x, y, t, store_history) < 0:
+    if trans_con(x, y, t,tc) < 0 or store_con(x, y, t, store_history,sc) < 0:
         return 10**10,  # 惩罚不满足约束条件的解
     elif not check(individual):
         return 10**10,  # 惩罚不满足约束条件的解
@@ -45,6 +58,7 @@ def custom_mutate(individual, indpb):
     return individual,
 
 
+
 # 创建适应度最小化类型
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMin)
@@ -52,37 +66,44 @@ creator.create("Individual", list, fitness=creator.FitnessMin)
 toolbox = base.Toolbox()
 
 # 注册个体和种群
-toolbox.register("attr_int", np.random.randint, 1, 9,size=50)
-toolbox.register("attr_bool", np.random.randint, 0, 2,size=50)
-toolbox.register("con_xy",lambda: np.hstack((toolbox.attr_int(), toolbox.attr_bool())).tolist())
-toolbox.register("individual", lambda:creator.Individual(toolbox.con_xy()))
+toolbox.register("individual", lambda:creator.Individual(random.choice(search_space)))
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
 # 注册遗传操作
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", custom_mutate, indpb=0.1)
 toolbox.register("select", tools.selTournament, tournsize=15)
 
 def GA(t, store_history):
-    p_size=10
+    tc=5200
+    sc=2
+    p_size=120  # 种群大小
     population = toolbox.population(n=p_size)
 
     # 注册评估函数
-    toolbox.register("evaluate", evaluate,t,store_history)
+    toolbox.register("evaluate", evaluate,t,store_history,tc,sc)
     # 评估种群
-    fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
-    
+    # fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+    fitnesses = toolbox.map(toolbox.evaluate, population)
     for ind, fit in zip(population, fitnesses):
         ind.fitness.values = fit
 
     #种群过差则重新生成种群
+    r=0
     while not check_p(population,p_size):
         population = toolbox.population(n=p_size)
-        fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+        # fitnesses = list(map(lambda ind: toolbox.evaluate(ind), population))
+        fitnesses = toolbox.map(toolbox.evaluate, population)
         for ind, fit in zip(population, fitnesses):
             ind.fitness.values = fit
+        r+=1
+        print(f"已重新生成{r}次种群")
+
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+    stats.register("avg", np.mean)
+    stats.register("min", np.min)
+    stats.register("max", np.max)
     # 进化过程
-    population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=5, verbose=True)
+    population,log= algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=50, stats=stats, verbose=True)
 
     # 找到当前周的最佳解
     best_individual = tools.selBest(population, k=1)[0]

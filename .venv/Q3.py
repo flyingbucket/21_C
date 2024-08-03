@@ -131,7 +131,7 @@ def trans_con(x,y,t):
     for tr in range(1,9):
         quan=np.sum(tell_type_trans(x,tr)*y*pur_raw)
         ls.append(quan)
-    return max(ls)-6000
+    return min(ls)-6000
 
 def store_con(x,y,t,store_history):
     '''库存约束'''

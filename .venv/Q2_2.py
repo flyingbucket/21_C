@@ -108,7 +108,8 @@ def cost(x,y,t,store_history):
     return pur_cost(y,t)+trans_lose(x,y,t)+store(x,y,t,store_history)
 
 # ---约束条件---
-def trans_con(x,y,t):
+#约束条件调试中
+def trans_con(x,y,t,tc):
     '''转运约束'''
     pur=[x_ij(i,t) for i in range(50)]
     pur_raw=np.array(pur)
@@ -116,11 +117,11 @@ def trans_con(x,y,t):
     for tr in range(1,9):
         quan=np.sum(tell_type_trans(x,tr)*y*pur_raw)
         ls.append(quan)
-    return max(ls)-6000
+    return min(ls)-800-tc
 
-def store_con(x,y,t,store_history):
+def store_con(x,y,t,store_history,sc):
     '''库存约束'''
-    return store_history[-1]+new_store(x,y,t)-2*2.82*10**4
+    return store_history[-1]+new_store(x,y,t)-sc*2.82*10**4
 
 # ---测试---
 # x=np.random.randint(1,9,50)
