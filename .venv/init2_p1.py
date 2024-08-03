@@ -6,13 +6,12 @@ from GA2_2 import evaluate,custom_mutate
 
 # 定义停止条件：有三分之一满足条件则停止
 def stop(top240):
-    g=0
     for ind in top240:
         if ind.fitness.values[0]<10**10:
-            g+=1
-        if g>=80:
-            return True
-    return False
+            continue
+        else:
+            return
+    return True
 
 # 定义约束条件值
 tc=0

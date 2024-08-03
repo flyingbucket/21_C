@@ -6,8 +6,8 @@ import pandas as pd
 决策变量y为50维01数组，表示供应商选择
 """
 # 读取数据
-supplier=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\supply_expectation.xlsx',header=0)
-fowarder=pd.read_excel(r'D:\mypython\math_modeling\21_C\.venv\forwarder_expectation.xlsx',header=0)
+supplier=pd.read_excel(r'I:\AAA\dev3\.venv\supply_expectation.xlsx',header=0)
+fowarder=pd.read_excel(r'I:\AAA\dev3\.venv\forwarder_expectation.xlsx',header=0)
 # print(supplier.columns[0])
 # print(fowarder.columns[0])
 

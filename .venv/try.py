@@ -65,3 +65,10 @@ with open(r'D:\mypython\math_modeling\21_C\data\search_space.txt', 'r') as file:
 
 toolbox.register("individual", lambda:creator.Individual(random.choice(search_space)))
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+
+
+def myfunc(v1,v2,toolbox,v3):
+    # myfunc计算代码,v1,v2,v3需要动态传入，
+    # toolbox是deap提供的工具箱，已经定义好，要保持不变
+    return res
+result=pool.starmap(myfunc,[(1,2,3,toolbox) for _ in range(10)])

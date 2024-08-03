@@ -7,7 +7,7 @@ from Q2_2 import store, trans_con, store_con, cost
 from tqdm import tqdm,trange
 
 # 从search_space.txt 读取数据
-with open(r'D:\mypython\math_modeling\21_C\data\search_space.txt', 'r') as file:
+with open(r'I:\AAA\dev3\data\search_space.txt', 'r') as file:
     search_space = json.load(file)
 
 print(type(search_space))  # 确认读取的内容是列表
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     store_history = pd.DataFrame(store_history)
     
     # 保存结果
-    with pd.ExcelWriter(r'D:\mypython\math_modeling\21_C\result\Q2_2_result.xlsx') as writer:
+    with pd.ExcelWriter(r'I:\AAA\dev3\result\Q2_2_result.xlsx') as writer:
         res_x.to_excel(writer, sheet_name='x', index=False)
         res_y.to_excel(writer, sheet_name='y', index=False)
         res_cost.to_excel(writer, sheet_name='cost', index=False)
